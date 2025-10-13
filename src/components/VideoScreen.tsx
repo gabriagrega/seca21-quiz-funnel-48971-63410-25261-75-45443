@@ -5,13 +5,16 @@ import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Play, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
+import { QuizAnswer } from "@/types/quiz";
 
 interface VideoScreenProps {
   onContinue: () => void;
   gender: 'male' | 'female' | null;
+  answers: QuizAnswer[];
+  userId: string;
 }
 
-export const VideoScreen = ({ onContinue, gender }: VideoScreenProps) => {
+export const VideoScreen = ({ onContinue, gender, answers, userId }: VideoScreenProps) => {
   const [videoEnded, setVideoEnded] = useState(false);
   const [showWhatsApp, setShowWhatsApp] = useState(false);
   const [whatsapp, setWhatsapp] = useState("");
@@ -19,6 +22,18 @@ export const VideoScreen = ({ onContinue, gender }: VideoScreenProps) => {
 
   const handleVideoEnd = () => {
     setVideoEnded(true);
+  };
+
+  const formatWhatsApp = (value: string) => {
+    const numbers = value.replace(/\D/g, '');
+    if (numbers.length <= 2) return numbers;
+    if (numbers.length <= 7) return `(${numbers.slice(0, 2)}) ${numbers.slice(2)}`;
+    return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(7, 11)}`;
+  };
+
+  const handleWhatsAppChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatWhatsApp(e.target.value);
+    setWhatsapp(formatted);
   };
 
   const handleSecarClick = () => {
@@ -42,8 +57,27 @@ export const VideoScreen = ({ onContinue, gender }: VideoScreenProps) => {
 
     setIsSubmitting(true);
     
-    // Aqui você pode enviar o WhatsApp para seu backend/webhook
-    await new Promise(resolve => setTimeout(resolve, 500));
+    try {
+      // Envia os dados do quiz junto com o WhatsApp
+      const score = answers.reduce((sum, answer) => sum + answer.value, 0);
+      
+      await fetch('http://host.docker.internal:5678/webhook-test/quiz/seca21', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          score,
+          gender,
+          whatsapp: numbersOnly,
+          answers,
+          completedAt: new Date().toISOString()
+        })
+      });
+    } catch (error) {
+      console.error('Erro ao enviar dados:', error);
+    }
     
     // Redireciona para o checkout da Kiwify baseado no gênero
     const checkoutUrl = gender === 'female' 
@@ -168,8 +202,9 @@ export const VideoScreen = ({ onContinue, gender }: VideoScreenProps) => {
                       type="tel"
                       placeholder="(00) 00000-0000"
                       value={whatsapp}
-                      onChange={(e) => setWhatsapp(e.target.value)}
+                      onChange={handleWhatsAppChange}
                       className="h-11 text-center"
+                      maxLength={15}
                       required
                     />
                     <Button
