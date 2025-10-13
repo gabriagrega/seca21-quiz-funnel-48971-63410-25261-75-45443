@@ -8,9 +8,10 @@ import { toast } from "sonner";
 
 interface VideoScreenProps {
   onContinue: () => void;
+  gender: 'male' | 'female' | null;
 }
 
-export const VideoScreen = ({ onContinue }: VideoScreenProps) => {
+export const VideoScreen = ({ onContinue, gender }: VideoScreenProps) => {
   const [videoEnded, setVideoEnded] = useState(false);
   const [showWhatsApp, setShowWhatsApp] = useState(false);
   const [whatsapp, setWhatsapp] = useState("");
@@ -44,8 +45,12 @@ export const VideoScreen = ({ onContinue }: VideoScreenProps) => {
     // Aqui você pode enviar o WhatsApp para seu backend/webhook
     await new Promise(resolve => setTimeout(resolve, 500));
     
-    // Redireciona para o checkout da Kiwify
-    window.location.href = 'https://pay.kiwify.com.br/SUA_URL_DE_CHECKOUT';
+    // Redireciona para o checkout da Kiwify baseado no gênero
+    const checkoutUrl = gender === 'female' 
+      ? 'https://pay.kiwify.com.br/KOaMcLU'
+      : 'https://pay.kiwify.com.br/E42kRSx';
+    
+    window.location.href = checkoutUrl;
   };
   return (
     <motion.div

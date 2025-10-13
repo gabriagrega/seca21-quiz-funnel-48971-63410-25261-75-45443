@@ -118,7 +118,7 @@ const Quiz = () => {
             <img src={logoSeca21} alt="SECA21" className="h-10" />
           </div>
           <div className="flex items-center min-h-[calc(100vh-8rem)]">
-            <VideoScreen onContinue={handleContinueFromVideo} />
+            <VideoScreen onContinue={handleContinueFromVideo} gender={gender} />
           </div>
         </div>
       </div>
