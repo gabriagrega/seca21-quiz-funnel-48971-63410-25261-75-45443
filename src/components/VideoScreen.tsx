@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Play } from "lucide-react";
+import { ArrowRight, Play, MessageCircle } from "lucide-react";
+import { toast } from "sonner";
 
 interface VideoScreenProps {
   onContinue: () => void;
@@ -10,9 +12,40 @@ interface VideoScreenProps {
 
 export const VideoScreen = ({ onContinue }: VideoScreenProps) => {
   const [videoEnded, setVideoEnded] = useState(false);
+  const [showWhatsApp, setShowWhatsApp] = useState(false);
+  const [whatsapp, setWhatsapp] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleVideoEnd = () => {
     setVideoEnded(true);
+  };
+
+  const handleSecarClick = () => {
+    setShowWhatsApp(true);
+  };
+
+  const handleWhatsAppSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!whatsapp) {
+      toast.error("Por favor, insira seu WhatsApp");
+      return;
+    }
+
+    // Validação básica de número (pelo menos 10 dígitos)
+    const numbersOnly = whatsapp.replace(/\D/g, '');
+    if (numbersOnly.length < 10) {
+      toast.error("Por favor, insira um WhatsApp válido");
+      return;
+    }
+
+    setIsSubmitting(true);
+    
+    // Aqui você pode enviar o WhatsApp para seu backend/webhook
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // Redireciona para o checkout da Kiwify
+    window.location.href = 'https://pay.kiwify.com.br/SUA_URL_DE_CHECKOUT';
   };
   return (
     <motion.div
@@ -63,11 +96,13 @@ export const VideoScreen = ({ onContinue }: VideoScreenProps) => {
             />
           </motion.div>
 
-          <AnimatePresence>
-            {videoEnded && (
+          <AnimatePresence mode="wait">
+            {videoEnded && !showWhatsApp && (
               <motion.div
+                key="offer"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.5 }}
                 className="space-y-4"
               >
@@ -92,13 +127,61 @@ export const VideoScreen = ({ onContinue }: VideoScreenProps) => {
                 </div>
 
                 <Button
-                  onClick={onContinue}
+                  onClick={handleSecarClick}
                   size="lg"
                   className="w-full bg-gradient-to-r from-primary to-primary/80 hover:opacity-90 transition-opacity text-base h-14 text-lg font-semibold animate-[shake_2s_ease-in-out_infinite]"
                 >
                   SECAR BARRIGUEIRA AGORA
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
+              </motion.div>
+            )}
+
+            {showWhatsApp && (
+              <motion.div
+                key="whatsapp"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="space-y-4"
+              >
+                <div className="bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 rounded-lg p-5">
+                  <div className="flex items-center justify-center mb-3">
+                    <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
+                      <MessageCircle className="w-6 h-6 text-primary" />
+                    </div>
+                  </div>
+                  <h3 className="text-lg font-semibold text-center mb-2">
+                    Antes de continuar...
+                  </h3>
+                  <p className="text-sm text-center text-muted-foreground mb-4">
+                    Compartilhe seu WhatsApp para receber atualizações importantes sobre seu treino e suporte exclusivo
+                  </p>
+                  
+                  <form onSubmit={handleWhatsAppSubmit} className="space-y-3">
+                    <Input
+                      type="tel"
+                      placeholder="(00) 00000-0000"
+                      value={whatsapp}
+                      onChange={(e) => setWhatsapp(e.target.value)}
+                      className="h-11 text-center"
+                      required
+                    />
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting}
+                      size="lg"
+                      className="w-full bg-gradient-to-r from-primary to-primary/80 hover:opacity-90 transition-opacity h-12 font-semibold"
+                    >
+                      {isSubmitting ? "Processando..." : (
+                        <>
+                          Continuar para o Checkout
+                          <ArrowRight className="ml-2 w-5 h-5" />
+                        </>
+                      )}
+                    </Button>
+                  </form>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
