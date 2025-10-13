@@ -78,9 +78,9 @@ export const VideoScreen = ({ onContinue }: VideoScreenProps) => {
             <Button
               onClick={onContinue}
               size="lg"
-              className="w-full bg-gradient-to-r from-primary to-primary/80 hover:opacity-90 transition-opacity text-base h-14 text-lg font-semibold"
+              className="w-full bg-gradient-to-r from-primary to-primary/80 hover:opacity-90 transition-opacity text-base h-14 text-lg font-semibold animate-[shake_1s_ease-in-out_infinite]"
             >
-              Ver Meu Plano Personalizado
+              SECAR BARRIGUEIRA AGORA
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </motion.div>

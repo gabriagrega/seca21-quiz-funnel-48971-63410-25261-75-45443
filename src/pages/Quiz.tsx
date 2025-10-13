@@ -66,8 +66,7 @@ const Quiz = () => {
   };
 
   const handleContinueFromVideo = () => {
-    setShowVideo(false);
-    setIsLoading(true);
+    window.location.href = '/captura';
   };
 
   const handleLoadingComplete = async () => {
