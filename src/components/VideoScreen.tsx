@@ -124,7 +124,7 @@ export const VideoScreen = ({ onContinue, gender, answers, userId, videoUrl }: V
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="relative w-[95%] mx-auto aspect-[9/16] md:aspect-video max-h-[75vh] rounded-lg overflow-hidden bg-black"
+            className="relative w-[95%] md:w-auto md:max-w-md mx-auto aspect-[9/16] max-h-[75vh] md:max-h-[85vh] rounded-lg overflow-hidden bg-black"
           >
             <video
               src={videoUrl}
