@@ -93,7 +93,7 @@ export const VideoScreen = ({ onContinue, gender, answers, userId }: VideoScreen
       exit={{ opacity: 0, scale: 0.95 }}
       className="w-full max-w-3xl mx-auto"
     >
-      <Card className="p-6 bg-gradient-to-br from-card to-card/50 border-primary/20 shadow-[0_0_50px_-12px_hsl(var(--primary))]">
+      <Card className="p-6 bg-gradient-to-br from-card to-card/50 border-primary/20 shadow-[0_0_50px_-12px_hsl(var(--primary))] overflow-hidden">
         <div className="space-y-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -116,7 +116,7 @@ export const VideoScreen = ({ onContinue, gender, answers, userId }: VideoScreen
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="relative w-full h-[70vh] md:h-[80vh] rounded-lg overflow-hidden bg-black border-2 border-primary/20"
+            className="relative -mx-6 w-[calc(100%+3rem)] aspect-[9/16] max-h-[75vh] bg-black"
           >
             <iframe
               src="https://www.youtube.com/embed/dQw4w9WgXcQ?enablejsapi=1"
