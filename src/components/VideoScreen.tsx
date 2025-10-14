@@ -116,7 +116,7 @@ export const VideoScreen = ({ onContinue, gender, answers, userId }: VideoScreen
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="relative w-full aspect-video rounded-lg overflow-hidden bg-black/5 border-2 border-primary/20"
+            className="relative w-full h-[70vh] md:h-[80vh] rounded-lg overflow-hidden bg-black border-2 border-primary/20"
           >
             <iframe
               src="https://www.youtube.com/embed/dQw4w9WgXcQ?enablejsapi=1"
