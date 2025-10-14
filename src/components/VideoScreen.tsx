@@ -116,14 +116,13 @@ export const VideoScreen = ({ onContinue, gender, answers, userId }: VideoScreen
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="relative -mx-6 w-[calc(100%+3rem)] aspect-[9/16] max-h-[75vh] bg-black"
+            className="relative w-[95%] mx-auto aspect-[9/16] max-h-[75vh] rounded-lg overflow-hidden bg-black"
           >
             <iframe
-              src="https://www.youtube.com/embed/dQw4w9WgXcQ?enablejsapi=1"
+              src="https://www.youtube.com/embed/dQw4w9WgXcQ?enablejsapi=1&controls=1&fs=0"
               title="SECA21 - Apresentação"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="w-full h-full"
+              className="w-full h-full object-cover"
               onLoad={(e) => {
                 const iframe = e.currentTarget;
                 const player = iframe.contentWindow;
