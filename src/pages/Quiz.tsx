@@ -162,7 +162,7 @@ const Quiz = () => {
           currentQuestion={currentQuestionIndex + 1}
           totalQuestions={quizQuestions.length}
         />
-        <QuizQuestion question={currentQuestion} onAnswer={handleAnswer} gender={gender} />
+        <QuizQuestion key={currentQuestion.id} question={currentQuestion} onAnswer={handleAnswer} gender={gender} />
       </div>
     </div>
   );
