@@ -118,19 +118,15 @@ export const VideoScreen = ({ onContinue, gender, answers, userId }: VideoScreen
             transition={{ delay: 0.4 }}
             className="relative w-[95%] mx-auto aspect-[9/16] max-h-[75vh] rounded-lg overflow-hidden bg-black"
           >
-            <iframe
-              src="https://www.youtube.com/embed/dQw4w9WgXcQ?enablejsapi=1&controls=1&fs=0"
+            <video
+              src={videoFile}
               title="SECA21 - Apresentação"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              autoPlay
+              playsInline
+              controlsList="nodownload nofullscreen"
+              disablePictureInPicture
+              onEnded={handleVideoEnd}
               className="w-full h-full object-cover"
-              onLoad={(e) => {
-                const iframe = e.currentTarget;
-                const player = iframe.contentWindow;
-                if (player) {
-                  // Simula o fim do vídeo após 3 segundos para teste (remova em produção)
-                  setTimeout(() => setVideoEnded(true), 3000);
-                }
-              }}
             />
           </motion.div>
 
