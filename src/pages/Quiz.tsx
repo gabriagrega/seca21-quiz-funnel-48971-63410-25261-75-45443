@@ -123,6 +123,7 @@ const Quiz = () => {
               gender={gender}
               answers={answers}
               userId={userId}
+              videoUrl="https://example.com/video.mp4"
             />
           </div>
         </div>

@@ -12,9 +12,10 @@ interface VideoScreenProps {
   gender: 'male' | 'female' | null;
   answers: QuizAnswer[];
   userId: string;
+  videoUrl: string;
 }
 
-export const VideoScreen = ({ onContinue, gender, answers, userId }: VideoScreenProps) => {
+export const VideoScreen = ({ onContinue, gender, answers, userId, videoUrl }: VideoScreenProps) => {
   const [videoEnded, setVideoEnded] = useState(false);
   const [showWhatsApp, setShowWhatsApp] = useState(false);
   const [whatsapp, setWhatsapp] = useState("");
@@ -119,7 +120,7 @@ export const VideoScreen = ({ onContinue, gender, answers, userId }: VideoScreen
             className="relative w-[95%] mx-auto aspect-[9/16] max-h-[75vh] rounded-lg overflow-hidden bg-black"
           >
             <video
-              src={videoFile}
+              src={videoUrl}
               title="SECA21 - Apresentação"
               autoPlay
               playsInline
