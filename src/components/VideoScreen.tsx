@@ -25,6 +25,13 @@ export const VideoScreen = ({ onContinue, gender, answers, userId, videoUrl }: V
     setVideoEnded(true);
   };
 
+  const handleTimeUpdate = (e: React.SyntheticEvent<HTMLVideoElement>) => {
+    const video = e.currentTarget;
+    if (video.currentTime >= 28 && !videoEnded) {
+      setVideoEnded(true);
+    }
+  };
+
   const formatWhatsApp = (value: string) => {
     const numbers = value.replace(/\D/g, '');
     if (numbers.length <= 2) return numbers;
@@ -126,6 +133,7 @@ export const VideoScreen = ({ onContinue, gender, answers, userId, videoUrl }: V
               playsInline
               controlsList="nodownload nofullscreen"
               disablePictureInPicture
+              onTimeUpdate={handleTimeUpdate}
               onEnded={handleVideoEnd}
               className="w-full h-full object-cover"
             />
