@@ -200,39 +200,7 @@ const Quiz = () => {
             <img src={logoSeca21} alt="SECA21" className="h-10" />
           </div>
           <div className="flex items-center min-h-[calc(100vh-8rem)]">
-<<<<<<< HEAD
             <VideoScreen onContinue={handleContinueFromVideo} gender={gender} answers={answers} userId={userId} cameFromCheckout={cameFromCheckout} />
-=======
-            <VideoScreen 
-              onContinue={handleContinueFromVideo} 
-              gender={gender}
-              answers={answers}
-              userId={userId}
-              videoUrl="https://example.com/video.mp4"
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (showMotivational) {
-    const message = motivationalMessages[currentMotivational];
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/10 py-6 px-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex justify-center mb-6">
-            <img src={logoSeca21} alt="SECA21" className="h-10" />
-          </div>
-          <div className="flex items-center min-h-[calc(100vh-8rem)]">
-            <MotivationalScreen
-              title={message.title}
-              message={message.message}
-              author={message.author}
-              onContinue={handleContinueFromMotivational}
-              gender={gender}
-            />
->>>>>>> 2b30b6b72b996045c0b7121a6c0fcbaaf9e01bb7
           </div>
         </div>
       </div>
@@ -245,14 +213,7 @@ const Quiz = () => {
         <div className="flex justify-center mb-6">
           <img src={logoSeca21} alt="SECA21" className="h-10" />
         </div>
-<<<<<<< HEAD
         <QuizProgress currentQuestion={currentQuestionIndex + 1} totalQuestions={quizQuestions.length} />
-=======
-        <QuizProgress
-          currentQuestion={currentQuestionIndex + 1}
-          totalQuestions={quizQuestions.length}
-        />
->>>>>>> 2b30b6b72b996045c0b7121a6c0fcbaaf9e01bb7
         <QuizQuestion key={currentQuestion.id} question={currentQuestion} onAnswer={handleAnswer} gender={gender} />
       </div>
     </div>
