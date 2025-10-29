@@ -6,17 +6,27 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Play, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 import { QuizAnswer } from "@/types/quiz";
+<<<<<<< HEAD
 import videoFile from '../assets/video-tiago-1.mp4';
+=======
+>>>>>>> 2b30b6b72b996045c0b7121a6c0fcbaaf9e01bb7
 
 interface VideoScreenProps {
   onContinue: () => void;
   gender: 'male' | 'female' | null;
   answers: QuizAnswer[];
   userId: string;
+<<<<<<< HEAD
   cameFromCheckout?: boolean;
 }
 
 export const VideoScreen = ({ onContinue, gender, answers, userId, cameFromCheckout }: VideoScreenProps) => {
+=======
+  videoUrl: string;
+}
+
+export const VideoScreen = ({ onContinue, gender, answers, userId, videoUrl }: VideoScreenProps) => {
+>>>>>>> 2b30b6b72b996045c0b7121a6c0fcbaaf9e01bb7
   const [videoEnded, setVideoEnded] = useState(false);
   const [showWhatsApp, setShowWhatsApp] = useState(false);
   const [whatsapp, setWhatsapp] = useState("");
@@ -31,6 +41,25 @@ export const VideoScreen = ({ onContinue, gender, answers, userId, cameFromCheck
     if (video.currentTime >= 28 && !videoEnded) {
       setVideoEnded(true);
     }
+<<<<<<< HEAD
+=======
+  };
+
+  const formatWhatsApp = (value: string) => {
+    const numbers = value.replace(/\D/g, '');
+    if (numbers.length <= 2) return numbers;
+    if (numbers.length <= 7) return `(${numbers.slice(0, 2)}) ${numbers.slice(2)}`;
+    return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(7, 11)}`;
+  };
+
+  const handleWhatsAppChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatWhatsApp(e.target.value);
+    setWhatsapp(formatted);
+  };
+
+  const handleSecarClick = () => {
+    setShowWhatsApp(true);
+>>>>>>> 2b30b6b72b996045c0b7121a6c0fcbaaf9e01bb7
   };
 
   const formatWhatsApp = (value: string) => {
@@ -48,6 +77,7 @@ export const VideoScreen = ({ onContinue, gender, answers, userId, cameFromCheck
   const handleAppSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+<<<<<<< HEAD
     // Continue to checkout — map gender to the correct Kiwify link.
     // Male -> D0jeViL, Female -> mhuPjE4 (per request).
     const checkoutUrl = gender === 'female'
@@ -55,6 +85,37 @@ export const VideoScreen = ({ onContinue, gender, answers, userId, cameFromCheck
       : 'https://pay.kiwify.com.br/D0jeViL';
     // append s1 userId so the checkout can identify the lead when needed
     window.location.href = `${checkoutUrl}?s1=${userId}`;
+=======
+    
+    try {
+      // Envia os dados do quiz junto com o WhatsApp
+      const score = answers.reduce((sum, answer) => sum + answer.value, 0);
+      
+      await fetch('http://host.docker.internal:5678/webhook-test/quiz/seca21', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          score,
+          gender,
+          whatsapp: numbersOnly,
+          answers,
+          completedAt: new Date().toISOString()
+        })
+      });
+    } catch (error) {
+      console.error('Erro ao enviar dados:', error);
+    }
+    
+    // Redireciona para o checkout da Kiwify baseado no gênero
+    const checkoutUrl = gender === 'female' 
+      ? 'https://pay.kiwify.com.br/KOaMcLU'
+      : 'https://pay.kiwify.com.br/E42kRSx';
+    
+    window.location.href = checkoutUrl;
+>>>>>>> 2b30b6b72b996045c0b7121a6c0fcbaaf9e01bb7
   };
   return (
     <motion.div
@@ -89,14 +150,23 @@ export const VideoScreen = ({ onContinue, gender, answers, userId, cameFromCheck
             className="relative w-[95%] md:w-auto md:max-w-md mx-auto aspect-[9/16] max-h-[75vh] md:max-h-[85vh] rounded-lg overflow-hidden bg-black"
           >
             <video
+<<<<<<< HEAD
               src={videoFile}
+=======
+              src={videoUrl}
+>>>>>>> 2b30b6b72b996045c0b7121a6c0fcbaaf9e01bb7
               title="SECA21 - Apresentação"
               autoPlay
               playsInline
               controlsList="nodownload nofullscreen"
               disablePictureInPicture
+<<<<<<< HEAD
               //onTimeUpdate={handleTimeUpdate}
               //onEnded={handleVideoEnd}
+=======
+              onTimeUpdate={handleTimeUpdate}
+              onEnded={handleVideoEnd}
+>>>>>>> 2b30b6b72b996045c0b7121a6c0fcbaaf9e01bb7
               className="w-full h-full object-cover"
             />
           </motion.div>
@@ -141,6 +211,57 @@ export const VideoScreen = ({ onContinue, gender, answers, userId, cameFromCheck
                 </Button>
               </motion.div>
 
+<<<<<<< HEAD
+=======
+            {showWhatsApp && (
+              <motion.div
+                key="whatsapp"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="space-y-4"
+              >
+                <div className="bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 rounded-lg p-5">
+                  <div className="flex items-center justify-center mb-3">
+                    <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
+                      <MessageCircle className="w-6 h-6 text-primary" />
+                    </div>
+                  </div>
+                  <h3 className="text-lg font-semibold text-center mb-2">
+                    Antes de continuar...
+                  </h3>
+                  <p className="text-sm text-center text-muted-foreground mb-4">
+                    Compartilhe seu WhatsApp para receber atualizações importantes sobre seu treino e suporte exclusivo
+                  </p>
+                  
+                  <form onSubmit={handleWhatsAppSubmit} className="space-y-3">
+                    <Input
+                      type="tel"
+                      placeholder="(00) 00000-0000"
+                      value={whatsapp}
+                      onChange={handleWhatsAppChange}
+                      className="h-11 text-center"
+                      maxLength={15}
+                      required
+                    />
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting}
+                      size="lg"
+                      className="w-full bg-gradient-to-r from-primary to-primary/80 hover:opacity-90 transition-opacity h-12 font-semibold"
+                    >
+                      {isSubmitting ? "Processando..." : (
+                        <>
+                          Continuar para o Checkout
+                          <ArrowRight className="ml-2 w-5 h-5" />
+                        </>
+                      )}
+                    </Button>
+                  </form>
+                </div>
+              </motion.div>
+            )}
+>>>>>>> 2b30b6b72b996045c0b7121a6c0fcbaaf9e01bb7
           </AnimatePresence>
         </div>
       </Card>
