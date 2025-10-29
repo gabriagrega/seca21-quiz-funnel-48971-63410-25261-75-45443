@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { CheckCircle, TrendingDown, Flame, Clock, ArrowRight, Star } from "lucide-react";
 import { motion } from "framer-motion";
 import logoSeca21 from "@/assets/logo-seca21.png";
+import { useNavigate } from "react-router-dom";
 
 interface ResultProps {
   score: number;
@@ -56,11 +57,7 @@ const Result = ({ score, gender = 'male' }: ResultProps) => {
   };
 
   const result = results[category];
-
-  // URLs de checkout baseado no gênero
-  const checkoutUrl = gender === 'female' 
-    ? 'https://pay.kiwify.com.br/bnNYhm3'
-    : 'https://kiwify.app/4fVyol3';
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/10 py-6 px-4">
@@ -140,7 +137,10 @@ const Result = ({ score, gender = 'male' }: ResultProps) => {
             </div>
 
             <Button
-              onClick={() => window.location.href = checkoutUrl}
+              onClick={() => {
+                // navigate to lead capture instead of direct checkout so Kiwify links exist only on the video CTA
+                navigate('/captura');
+              }}
               className="w-full h-14 text-base font-bold bg-gradient-to-r from-primary to-primary/80 hover:opacity-90 transition-opacity shadow-[0_0_30px_-5px_hsl(var(--primary))]"
             >
               QUERO COMEÇAR AGORA

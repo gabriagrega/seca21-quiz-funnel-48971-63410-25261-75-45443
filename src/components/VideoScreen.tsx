@@ -5,13 +5,18 @@ import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Play, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
+import { QuizAnswer } from "@/types/quiz";
+import videoFile from '../assets/video-tiago-1.mp4';
 
 interface VideoScreenProps {
   onContinue: () => void;
   gender: 'male' | 'female' | null;
+  answers: QuizAnswer[];
+  userId: string;
+  cameFromCheckout?: boolean;
 }
 
-export const VideoScreen = ({ onContinue, gender }: VideoScreenProps) => {
+export const VideoScreen = ({ onContinue, gender, answers, userId, cameFromCheckout }: VideoScreenProps) => {
   const [videoEnded, setVideoEnded] = useState(false);
   const [showWhatsApp, setShowWhatsApp] = useState(false);
   const [whatsapp, setWhatsapp] = useState("");
@@ -21,36 +26,35 @@ export const VideoScreen = ({ onContinue, gender }: VideoScreenProps) => {
     setVideoEnded(true);
   };
 
-  const handleSecarClick = () => {
-    setShowWhatsApp(true);
+  const handleTimeUpdate = (e: React.SyntheticEvent<HTMLVideoElement>) => {
+    const video = e.currentTarget;
+    if (video.currentTime >= 28 && !videoEnded) {
+      setVideoEnded(true);
+    }
   };
 
-  const handleWhatsAppSubmit = async (e: React.FormEvent) => {
+  const formatWhatsApp = (value: string) => {
+    const numbers = value.replace(/\D/g, '');
+    if (numbers.length <= 2) return numbers;
+    if (numbers.length <= 7) return `(${numbers.slice(0, 2)}) ${numbers.slice(2)}`;
+    return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(7, 11)}`;
+  };
+
+  const handleWhatsAppChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatWhatsApp(e.target.value);
+    setWhatsapp(formatted);
+  };
+
+  const handleAppSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!whatsapp) {
-      toast.error("Por favor, insira seu WhatsApp");
-      return;
-    }
-
-    // Validação básica de número (pelo menos 10 dígitos)
-    const numbersOnly = whatsapp.replace(/\D/g, '');
-    if (numbersOnly.length < 10) {
-      toast.error("Por favor, insira um WhatsApp válido");
-      return;
-    }
-
     setIsSubmitting(true);
-    
-    // Aqui você pode enviar o WhatsApp para seu backend/webhook
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    // Redireciona para o checkout da Kiwify baseado no gênero
-    const checkoutUrl = gender === 'female' 
-      ? 'https://pay.kiwify.com.br/KOaMcLU'
-      : 'https://pay.kiwify.com.br/E42kRSx';
-    
-    window.location.href = checkoutUrl;
+    // Continue to checkout — map gender to the correct Kiwify link.
+    // Male -> D0jeViL, Female -> mhuPjE4 (per request).
+    const checkoutUrl = gender === 'female'
+      ? 'https://pay.kiwify.com.br/mhuPjE4'
+      : 'https://pay.kiwify.com.br/D0jeViL';
+    // append s1 userId so the checkout can identify the lead when needed
+    window.location.href = `${checkoutUrl}?s1=${userId}`;
   };
   return (
     <motion.div
@@ -59,7 +63,7 @@ export const VideoScreen = ({ onContinue, gender }: VideoScreenProps) => {
       exit={{ opacity: 0, scale: 0.95 }}
       className="w-full max-w-3xl mx-auto"
     >
-      <Card className="p-6 bg-gradient-to-br from-card to-card/50 border-primary/20 shadow-[0_0_50px_-12px_hsl(var(--primary))]">
+      <Card className="p-6 bg-gradient-to-br from-card to-card/50 border-primary/20 shadow-[0_0_50px_-12px_hsl(var(--primary))] overflow-hidden">
         <div className="space-y-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -82,27 +86,23 @@ export const VideoScreen = ({ onContinue, gender }: VideoScreenProps) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="relative w-full aspect-video rounded-lg overflow-hidden bg-black/5 border-2 border-primary/20"
+            className="relative w-[95%] md:w-auto md:max-w-md mx-auto aspect-[9/16] max-h-[75vh] md:max-h-[85vh] rounded-lg overflow-hidden bg-black"
           >
-            <iframe
-              src="https://www.youtube.com/embed/dQw4w9WgXcQ?enablejsapi=1"
+            <video
+              src={videoFile}
               title="SECA21 - Apresentação"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="w-full h-full"
-              onLoad={(e) => {
-                const iframe = e.currentTarget;
-                const player = iframe.contentWindow;
-                if (player) {
-                  // Simula o fim do vídeo após 3 segundos para teste (remova em produção)
-                  setTimeout(() => setVideoEnded(true), 3000);
-                }
-              }}
+              autoPlay
+              playsInline
+              controlsList="nodownload nofullscreen"
+              disablePictureInPicture
+              //onTimeUpdate={handleTimeUpdate}
+              //onEnded={handleVideoEnd}
+              className="w-full h-full object-cover"
             />
           </motion.div>
 
           <AnimatePresence mode="wait">
-            {videoEnded && !showWhatsApp && (
+
               <motion.div
                 key="offer"
                 initial={{ opacity: 0, y: 20 }}
@@ -126,13 +126,13 @@ export const VideoScreen = ({ onContinue, gender }: VideoScreenProps) => {
                     </li>
                     <li className="flex items-center gap-2">
                       <span className="text-primary">✓</span>
-                      <span>Suporte direto e acompanhamento diário</span>
+                      <span>Assistente pessoal para acompanhamento personalizado</span>
                     </li>
                   </ul>
                 </div>
 
                 <Button
-                  onClick={handleSecarClick}
+                  onClick={handleAppSubmit}
                   size="lg"
                   className="w-full bg-gradient-to-r from-primary to-primary/80 hover:opacity-90 transition-opacity text-base h-14 text-lg font-semibold animate-[shake_2s_ease-in-out_infinite]"
                 >
@@ -140,55 +140,7 @@ export const VideoScreen = ({ onContinue, gender }: VideoScreenProps) => {
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
               </motion.div>
-            )}
 
-            {showWhatsApp && (
-              <motion.div
-                key="whatsapp"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="space-y-4"
-              >
-                <div className="bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 rounded-lg p-5">
-                  <div className="flex items-center justify-center mb-3">
-                    <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
-                      <MessageCircle className="w-6 h-6 text-primary" />
-                    </div>
-                  </div>
-                  <h3 className="text-lg font-semibold text-center mb-2">
-                    Antes de continuar...
-                  </h3>
-                  <p className="text-sm text-center text-muted-foreground mb-4">
-                    Compartilhe seu WhatsApp para receber atualizações importantes sobre seu treino e suporte exclusivo
-                  </p>
-                  
-                  <form onSubmit={handleWhatsAppSubmit} className="space-y-3">
-                    <Input
-                      type="tel"
-                      placeholder="(00) 00000-0000"
-                      value={whatsapp}
-                      onChange={(e) => setWhatsapp(e.target.value)}
-                      className="h-11 text-center"
-                      required
-                    />
-                    <Button
-                      type="submit"
-                      disabled={isSubmitting}
-                      size="lg"
-                      className="w-full bg-gradient-to-r from-primary to-primary/80 hover:opacity-90 transition-opacity h-12 font-semibold"
-                    >
-                      {isSubmitting ? "Processando..." : (
-                        <>
-                          Continuar para o Checkout
-                          <ArrowRight className="ml-2 w-5 h-5" />
-                        </>
-                      )}
-                    </Button>
-                  </form>
-                </div>
-              </motion.div>
-            )}
           </AnimatePresence>
         </div>
       </Card>

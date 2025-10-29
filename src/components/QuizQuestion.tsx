@@ -12,15 +12,21 @@ import woman3039 from "@/assets/woman-30-39.png";
 import woman4049 from "@/assets/woman-40-49.png";
 import woman50plus from "@/assets/woman-50plus.png";
 
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
+
 interface QuizQuestionProps {
   question: QuizQuestionType;
-  onAnswer: (optionId: string, value: number) => void;
+  onAnswer: (optionId: string, value: number | string) => void;
   gender?: 'male' | 'female' | null;
 }
 
 export const QuizQuestion = ({ question, onAnswer, gender }: QuizQuestionProps) => {
+  const [inputValue, setInputValue] = useState<string>("");
   const isGenderQuestion = question.type === "gender";
   const isAgeQuestion = question.type === "age";
+  const isTextInput = question.type === "text" || question.type === "email" || question.type === "phone";
+  const isNumberInput = question.type === "number";
 
   const getAgeImage = (imageKey: string) => {
     const ageImages = {
@@ -59,7 +65,7 @@ export const QuizQuestion = ({ question, onAnswer, gender }: QuizQuestionProps) 
       </div>
 
       <div className={`grid gap-3 ${isGenderQuestion || isAgeQuestion ? "grid-cols-2" : ""}`}>
-        {question.options.map((option, index) => (
+        {question.options?.map((option, index) => (
           <motion.div
             key={option.id}
             initial={{ opacity: 0, x: -20 }}
@@ -102,6 +108,54 @@ export const QuizQuestion = ({ question, onAnswer, gender }: QuizQuestionProps) 
             </Card>
           </motion.div>
         ))}
+
+          {/* Input / free-text question handling */}
+          {isTextInput || isNumberInput ? (
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.1 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="col-span-1 sm:col-span-2"
+            >
+              <Card className="p-4 bg-card/50 backdrop-blur-sm">
+                <div className="flex flex-col gap-4">
+                  <input
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    type={isNumberInput ? 'number' : 'text'}
+                    inputMode={question.type === 'phone' ? 'tel' : undefined}
+                    placeholder="Digite sua resposta aqui"
+                    className="w-full px-4 py-3 rounded-md border border-border bg-transparent text-foreground"
+                  />
+                  <div className="flex justify-end">
+                    <Button
+                      onClick={() => {
+                        // basic validation
+                        if (question.type === 'email') {
+                          const re = /^\S+@\S+\.\S+$/;
+                          if (!re.test(inputValue)) return;
+                        }
+                        if (question.type === 'phone') {
+                          if (!inputValue || inputValue.length < 8) return;
+                        }
+                        if (isNumberInput) {
+                          const n = Number(inputValue);
+                          onAnswer('input', Number.isFinite(n) ? n : 0);
+                        } else {
+                          onAnswer('input', inputValue);
+                        }
+                        setInputValue("");
+                      }}
+                    >
+                      Continuar
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            </motion.div>
+          ) : null}
       </div>
     </motion.div>
   );

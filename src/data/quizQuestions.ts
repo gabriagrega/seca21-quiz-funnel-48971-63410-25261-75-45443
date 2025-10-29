@@ -1,10 +1,16 @@
 import { QuizQuestion } from "@/types/quiz";
 
 export const quizQuestions: QuizQuestion[] = [
+  // Etapa 1: Dados pessoais
   {
     id: 1,
-    question: "Primeiro, me diz: qual é o seu sexo?",
-    subtitle: "Vamos personalizar o programa para você",
+    question: "Qual é o seu nome?",
+    subtitle: "Etapa 1 — Dados pessoais",
+    type: "text",
+  },
+  {
+    id: 2,
+    question: "Qual é o seu sexo?",
     type: "gender",
     options: [
       { id: "male", text: "Homem", value: 0, icon: "male" },
@@ -12,7 +18,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
   },
   {
-    id: 2,
+    id: 3,
     question: "Qual é a sua idade?",
     subtitle: "Isso nos ajuda a personalizar melhor o programa",
     type: "age",
@@ -23,94 +29,139 @@ export const quizQuestions: QuizQuestion[] = [
       { id: "50+", text: "50+ anos", value: 0, image: "50plus" },
     ],
   },
-  {
-    id: 3,
-    question: "Qual é o seu principal objetivo com o SECA21?",
-    options: [
-      { id: "a", text: "Perder barriga e definir o abdômen", value: 3 },
-      { id: "b", text: "Emagrecer de forma saudável", value: 2 },
-      { id: "c", text: "Ganhar mais disposição e energia", value: 1 },
-      { id: "d", text: "Todos os acima", value: 3 },
-    ],
-  },
+
+  // Etapa 2: Físico
   {
     id: 4,
-    question: "Quanto tempo você pode dedicar aos treinos por dia?",
-    options: [
-      { id: "a", text: "Menos de 15 minutos", value: 1 },
-      { id: "b", text: "15 a 30 minutos", value: 2 },
-      { id: "c", text: "30 a 45 minutos", value: 3 },
-      { id: "d", text: "Mais de 45 minutos", value: 3 },
-    ],
+    question: "Qual é o seu peso atual (kg)?",
+    type: "number",
   },
   {
     id: 5,
-    question: "Como você descreveria sua alimentação atual?",
-    options: [
-      { id: "a", text: "Muito desregulada, como qualquer coisa", value: 1 },
-      { id: "b", text: "Tento comer bem, mas tenho dificuldades", value: 2 },
-      { id: "c", text: "Sigo uma alimentação balanceada na maioria das vezes", value: 3 },
-      { id: "d", text: "Muito controlada e saudável", value: 3 },
-    ],
+    question: "Qual é a sua altura (cm)?",
+    type: "number",
   },
   {
     id: 6,
-    question: "Qual é o seu nível atual de atividade física?",
+    question: "Qual é o seu principal objetivo com o SECA21?",
+    type: "select",
     options: [
-      { id: "a", text: "Sedentário - não faço exercícios", value: 1 },
-      { id: "b", text: "Leve - 1 a 2x por semana", value: 2 },
-      { id: "c", text: "Moderado - 3 a 4x por semana", value: 3 },
-      { id: "d", text: "Intenso - 5x ou mais por semana", value: 3 },
+      { id: "emagrecer", text: "Emagrecer / Perder gordura", value: 3 },
+      { id: "ganhar_massa", text: "Ganhar massa muscular", value: 2 },
+      { id: "definir", text: "Definir / Tonificar", value: 2 },
+      { id: "disposicao", text: "Mais disposição e energia", value: 1 },
     ],
   },
   {
     id: 7,
-    question: "Qual é o seu maior desafio para emagrecer?",
+    question: "Qual é o seu nível atual de atividade física?",
+    subtitle: "Etapa 3 — Rotina e atividade",
     options: [
-      { id: "a", text: "Falta de tempo para treinar", value: 2 },
-      { id: "b", text: "Falta de motivação e disciplina", value: 2 },
-      { id: "c", text: "Não sei por onde começar", value: 3 },
-      { id: "d", text: "Dificuldade em manter a consistência", value: 3 },
+      { id: "sedentario", text: "Sedentário - não faço exercícios", value: 1 },
+      { id: "leve", text: "Leve - 1 a 2x por semana", value: 2 },
+      { id: "moderado", text: "Moderado - 3 a 4x por semana", value: 3 },
+      { id: "intenso", text: "Intenso - 5x ou mais por semana", value: 3 },
     ],
   },
   {
     id: 8,
-    question: "Você tem alguma restrição alimentar?",
+    question: "Como é sua rotina diária?",
+    subtitle: "Trabalho / estilo de vida",
+    type: "select",
     options: [
-      { id: "a", text: "Não tenho restrições", value: 3 },
-      { id: "b", text: "Vegetariano/Vegano", value: 2 },
-      { id: "c", text: "Intolerância a lactose/glúten", value: 2 },
-      { id: "d", text: "Outras restrições", value: 2 },
+      { id: "sentado", text: "Trabalho sentado (escritório)", value: 1 },
+      { id: "em_pe", text: "Trabalho em pé / setor operacional", value: 2 },
+      { id: "home", text: "Trabalho em casa", value: 2 },
+      { id: "variavel", text: "Rotina variada / outros", value: 2 },
     ],
   },
   {
     id: 9,
-    question: "Você já tentou programas de emagrecimento antes?",
+    question: "Onde você prefere treinar?",
+    type: "select",
     options: [
-      { id: "a", text: "Não, esta seria minha primeira vez", value: 1 },
-      { id: "b", text: "Sim, mas não consegui resultados", value: 3 },
-      { id: "c", text: "Sim, tive resultados mas não mantive", value: 3 },
-      { id: "d", text: "Sim, e tive sucesso parcial", value: 2 },
+      { id: "academia", text: "Academia", value: 3 },
+      { id: "casa", text: "Em casa", value: 2 },
+      { id: "ar_livre", text: "Ao ar livre", value: 2 },
+      { id: "sem_preferencia", text: "Sem preferência", value: 1 },
     ],
   },
   {
     id: 10,
-    question: "Qual resultado você espera alcançar em 21 dias?",
+    question: "Quando você costuma ter disponibilidade para treinar? (ex: manhã, tarde, noite)",
+    type: "text",
+  },
+  // Etapa 4: Localização e contato
+  {
+    id: 11,
+    question: "Em qual cidade você mora?",
+    type: "text",
+  },
+  {
+    id: 12,
+    question: "Qual é o seu estado (UF)?",
+    type: "text",
+  },
+  {
+    id: 13,
+    question: "Qual é o seu e-mail?",
+    type: "email",
+  },
+  {
+    id: 14,
+    question: "Qual é o seu WhatsApp (com DDD)?",
+    type: "phone",
+  },
+
+  // Etapa 5: Motivação / compromisso
+  {
+    id: 15,
+    question: "Qual é o seu maior desafio para emagrecer?",
     options: [
-      { id: "a", text: "Perder de 3 a 5 kg", value: 2 },
-      { id: "b", text: "Perder de 5 a 8 kg", value: 3 },
-      { id: "c", text: "Definir o abdômen e perder medidas", value: 2 },
-      { id: "d", text: "Criar hábitos saudáveis duradouros", value: 3 },
+      { id: "tempo", text: "Falta de tempo para treinar", value: 2 },
+      { id: "motivacao", text: "Falta de motivação e disciplina", value: 2 },
+      { id: "comeco", text: "Não sei por onde começar", value: 3 },
+      { id: "consistencia", text: "Dificuldade em manter a consistência", value: 3 },
     ],
   },
   {
-    id: 11,
+    id: 16,
+    question: "Você tem alguma restrição alimentar?",
+    options: [
+      { id: "nenhuma", text: "Não tenho restrições", value: 3 },
+      { id: "veg", text: "Vegetariano/Vegano", value: 2 },
+      { id: "intolerancia", text: "Intolerância a lactose/glúten", value: 2 },
+      { id: "outras", text: "Outras restrições", value: 2 },
+    ],
+  },
+  {
+    id: 17,
+    question: "Você já tentou programas de emagrecimento antes?",
+    options: [
+      { id: "primeira", text: "Não, esta seria minha primeira vez", value: 1 },
+      { id: "sem_result", text: "Sim, mas não consegui resultados", value: 3 },
+      { id: "teve_result", text: "Sim, tive resultados mas não mantive", value: 3 },
+      { id: "parcial", text: "Sim, e tive sucesso parcial", value: 2 },
+    ],
+  },
+  {
+    id: 18,
+    question: "Qual resultado você espera alcançar em 21 dias?",
+    options: [
+      { id: "3-5kg", text: "Perder de 3 a 5 kg", value: 2 },
+      { id: "5-10kg", text: "Perder de 5 a 10 kg", value: 3 },
+      { id: "definir", text: "Definir o abdômen e perder medidas", value: 2 },
+      { id: "habitos", text: "Criar hábitos saudáveis duradouros", value: 3 },
+    ],
+  },
+  {
+    id: 19,
     question: "Você está realmente comprometido(a) a seguir o programa por 21 dias?",
     options: [
-      { id: "a", text: "Sim, estou 100% comprometido(a)!", value: 3 },
-      { id: "b", text: "Sim, mas vou precisar de suporte", value: 2 },
-      { id: "c", text: "Talvez, quero ver primeiro como funciona", value: 1 },
-      { id: "d", text: "Sim, já tentei outras coisas e quero algo que realmente funcione", value: 3 },
+      { id: "100", text: "Sim, estou 100% comprometido(a)!", value: 3 },
+      { id: "suporte", text: "Sim, mas vou precisar de suporte", value: 2 },
+      { id: "talvez", text: "Talvez, quero ver primeiro como funciona", value: 1 },
+      { id: "ja_tentei", text: "Sim, já tentei outras coisas e quero algo que realmente funcione", value: 3 },
     ],
   },
 ];

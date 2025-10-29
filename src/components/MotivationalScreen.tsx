@@ -10,6 +10,7 @@ import transformation2 from "@/assets/transformation-2.jpg";
 import transformation3 from "@/assets/transformation-3.jpg";
 import transformation4 from "@/assets/transformation-4.jpg";
 import transformation5 from "@/assets/transformation-5.jpg";
+import transformation6 from "@/assets/transformation-5.jpg";
 import transformationTiagoResult from "@/assets/transformation-tiago-result.png";
 
 interface MotivationalScreenProps {
@@ -37,6 +38,7 @@ export const MotivationalScreen = ({
     transformation3,
     transformation4,
     transformation5,
+    transformation6,
   ];
 
   return (

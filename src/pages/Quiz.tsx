@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { QuizProgress } from "@/components/QuizProgress";
 import { QuizQuestion } from "@/components/QuizQuestion";
 import { MotivationalScreen } from "@/components/MotivationalScreen";
@@ -20,94 +21,175 @@ const Quiz = () => {
   const [currentMotivational, setCurrentMotivational] = useState(0);
   const [gender, setGender] = useState<'male' | 'female' | null>(null);
   const [totalScore, setTotalScore] = useState(0);
-  const [userId] = useState(() => crypto.randomUUID());
+  const [userId, setUserId] = useState<string>(() => {
+    try {
+      const stored = localStorage.getItem('seca21_userId');
+      if (stored) return stored;
+    } catch (e) {
+      console.warn('Could not read stored userId', e);
+    }
+    return '';
+  });
+  const [cameFromCheckout, setCameFromCheckout] = useState(false);
+  const [phone, setPhone] = useState<string | null>(null);
 
   const currentQuestion = quizQuestions[currentQuestionIndex];
+  const navigate = useNavigate();
 
-  const handleAnswer = (optionId: string, value: number) => {
-    // Captura o gênero na primeira pergunta
-    if (currentQuestionIndex === 0) {
+  const handleAnswer = async (optionId: string, value: number | string) => {
+    // set gender when the current question is a gender type (position may change)
+    if (currentQuestion.type === 'gender') {
       setGender(optionId as 'male' | 'female');
     }
+
+    const optionFromList = currentQuestion.options?.find(o => o.id === optionId);
+    const optionText = optionFromList ? optionFromList.text : (typeof value === 'string' ? value : String(value));
 
     const newAnswer: QuizAnswer = {
       questionId: currentQuestion.id,
       optionId,
       value,
+      questonText: currentQuestion.question,
+      optionText
     };
 
     const newAnswers = [...answers, newAnswer];
     setAnswers(newAnswers);
 
-    // Verifica se deve mostrar mensagem motivacional
     const motivationalMessage = motivationalMessages.find(
       (msg) => msg.showAfterQuestion === currentQuestion.id
     );
 
     if (motivationalMessage) {
-      setCurrentMotivational(motivationalMessages.indexOf(motivationalMessage));
+      const idx = motivationalMessages.findIndex((m) => m.id === motivationalMessage.id);
+      setCurrentMotivational(idx >= 0 ? idx : 0);
+      setCurrentQuestionIndex((i) => Math.min(i + 1, quizQuestions.length - 1));
       setShowMotivational(true);
-    } else if (currentQuestionIndex < quizQuestions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-    } else {
-      // Mostra o vídeo após a última pergunta
-      setShowVideo(true);
+      return;
     }
+
+    if (currentQuestionIndex < quizQuestions.length - 1) {
+      setCurrentQuestionIndex((i) => i + 1);
+      return;
+    }
+
+    // Last question: decide where to go
+    const newAnswersToSend = newAnswers;
+
+    // If user arrived with ref and phone, they already bought: submit and go to obrigado
+    if (userId && phone) {
+      try {
+        const alreadySubmitted = !!localStorage.getItem('seca21_quizSubmitted');
+        if (!alreadySubmitted) {
+          const score = newAnswersToSend.reduce((sum, a) => sum + (typeof a.value === 'number' ? a.value : 0), 0);
+          await fetch('https://n8n.somosagrega.com.br/webhook-test/quiz/post', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId, phone, score, gender, answers: newAnswersToSend, completedAt: new Date().toISOString() })
+          });
+          try { localStorage.setItem('seca21_quizSubmitted', 'true'); } catch (e) { /* ignore */ }
+        }
+      } catch (err) {
+        console.error('Erro ao enviar dados do quiz for returning buyer:', err);
+        try { localStorage.setItem('seca21_quizSubmitted', 'true'); } catch (e) { /* ignore */ }
+      }
+      // Instead of going to a thank-you page, show the video directly for returning buyers
+      setCameFromCheckout(true);
+      setShowVideo(true);
+      return;
+    }
+
+    // If we've already submitted before, go to obrigado
+    try {
+      const alreadySubmitted = !!localStorage.getItem('seca21_quizSubmitted');
+      if (alreadySubmitted) {
+        // If previously submitted, go straight to the video (no obrigado page)
+        setCameFromCheckout(true);
+        setShowVideo(true);
+        return;
+      }
+    } catch (e) { /* ignore */ }
+
+    // Otherwise send the answers and then show the video
+    try {
+      const score = newAnswersToSend.reduce((sum, a) => sum + (typeof a.value === 'number' ? a.value : 0), 0);
+      await fetch('https://n8n.somosagrega.com.br/webhook-test/quiz/post', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, phone, score, gender, answers: newAnswersToSend, completedAt: new Date().toISOString() })
+      });
+      try { localStorage.setItem('seca21_quizSubmitted', 'true'); } catch (e) { /* ignore */ }
+    } catch (err) {
+      console.error('Erro ao enviar dados do quiz antes do vídeo:', err);
+      try { localStorage.setItem('seca21_quizSubmitted', 'true'); } catch (e) { /* ignore */ }
+    }
+
+    setShowVideo(true);
   };
 
   const handleContinueFromMotivational = () => {
     setShowMotivational(false);
-    if (currentQuestionIndex < quizQuestions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-    } else {
-      // Mostra o vídeo após a última pergunta
-      setShowVideo(true);
-    }
   };
 
   const handleContinueFromVideo = () => {
-    window.location.href = '/captura';
+    navigate('/captura');
   };
 
   const handleLoadingComplete = async () => {
-    const score = answers.reduce((sum, answer) => sum + answer.value, 0);
+    const score = answers.reduce((sum, a) => sum + (typeof a.value === 'number' ? a.value : 0), 0);
     setTotalScore(score);
-    
-    // Envia os dados do quiz para o webhook
-    try {
-      const payload = {
-        userId,
-        score,
-        gender,
-        answers: answers.map(answer => ({
-          questionId: answer.questionId,
-          optionId: answer.optionId,
-          value: answer.value,
-          questionText: quizQuestions.find(q => q.id === answer.questionId)?.question
-        })),
-        completedAt: new Date().toISOString()
-      };
-
-      await fetch('http://host.docker.internal:5678/webhook-test/quiz/seca21', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload)
-      });
-    } catch (error) {
-      console.error('Erro ao enviar dados do quiz:', error);
-    }
-    
     setShowResult(true);
   };
 
-  if (showResult) {
-    return <Result score={totalScore} gender={gender} />;
-  }
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const s1 = params.get('s1');
+      const ref = params.get('ref');
+      const phoneParam = params.get('phone');
+      if (s1) setCameFromCheckout(true);
 
-  if (isLoading) {
-    return <LoadingScreen onComplete={handleLoadingComplete} />;
+      if (ref) {
+        setUserId(ref);
+        try { localStorage.setItem('seca21_userId', ref); } catch (e) { /* ignore */ }
+      } else {
+        const stored = localStorage.getItem('seca21_userId');
+        if (stored) setUserId(stored);
+        else {
+          const id = crypto.randomUUID();
+          setUserId(id);
+          try { localStorage.setItem('seca21_userId', id); } catch (e) { /* ignore */ }
+        }
+      }
+
+      if (phoneParam) {
+        setPhone(phoneParam);
+        try { localStorage.setItem('seca21_phone', phoneParam); } catch (e) { /* ignore */ }
+      } else {
+        const storedPhone = localStorage.getItem('seca21_phone');
+        if (storedPhone) setPhone(storedPhone);
+      }
+    } catch (e) { console.warn('Error parsing URL params', e); }
+  }, []);
+
+  if (showResult) return <Result score={totalScore} gender={gender} />;
+  if (isLoading) return <LoadingScreen onComplete={handleLoadingComplete} />;
+
+  if (showMotivational) {
+    const message = motivationalMessages[currentMotivational] ?? null;
+    if (!message) return null;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/10 py-6 px-4">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex justify-center mb-6">
+            <img src={logoSeca21} alt="SECA21" className="h-10" />
+          </div>
+          <div className="flex items-center min-h-[calc(100vh-8rem)]">
+            <MotivationalScreen title={message.title} message={message.message} author={message.author} onContinue={handleContinueFromMotivational} gender={gender} />
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (showVideo) {
@@ -118,29 +200,7 @@ const Quiz = () => {
             <img src={logoSeca21} alt="SECA21" className="h-10" />
           </div>
           <div className="flex items-center min-h-[calc(100vh-8rem)]">
-            <VideoScreen onContinue={handleContinueFromVideo} gender={gender} />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (showMotivational) {
-    const message = motivationalMessages[currentMotivational];
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/10 py-6 px-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex justify-center mb-6">
-            <img src={logoSeca21} alt="SECA21" className="h-10" />
-          </div>
-          <div className="flex items-center min-h-[calc(100vh-8rem)]">
-            <MotivationalScreen
-              title={message.title}
-              message={message.message}
-              author={message.author}
-              onContinue={handleContinueFromMotivational}
-              gender={gender}
-            />
+            <VideoScreen onContinue={handleContinueFromVideo} gender={gender} answers={answers} userId={userId} cameFromCheckout={cameFromCheckout} />
           </div>
         </div>
       </div>
@@ -153,11 +213,8 @@ const Quiz = () => {
         <div className="flex justify-center mb-6">
           <img src={logoSeca21} alt="SECA21" className="h-10" />
         </div>
-        <QuizProgress
-          currentQuestion={currentQuestionIndex + 1}
-          totalQuestions={quizQuestions.length}
-        />
-        <QuizQuestion question={currentQuestion} onAnswer={handleAnswer} gender={gender} />
+        <QuizProgress currentQuestion={currentQuestionIndex + 1} totalQuestions={quizQuestions.length} />
+        <QuizQuestion key={currentQuestion.id} question={currentQuestion} onAnswer={handleAnswer} gender={gender} />
       </div>
     </div>
   );

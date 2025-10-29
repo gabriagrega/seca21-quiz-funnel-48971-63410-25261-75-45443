@@ -10,14 +10,19 @@ export interface QuizQuestion {
   id: number;
   question: string;
   subtitle?: string;
-  options: QuizOption[];
-  type?: 'default' | 'gender' | 'age' | 'visual';
+  // options is optional now because some questions are free-text / inputs
+  options?: QuizOption[];
+  // types include input-style types for text/number/email/phone
+  type?: 'default' | 'gender' | 'age' | 'visual' | 'text' | 'number' | 'email' | 'phone' | 'select';
 }
 
 export interface QuizAnswer {
   questionId: number;
   optionId: string;
-  value: number;
+  // value can be numeric score OR free-text answer
+  value: number | string;
+  questonText?: string;
+  optionText?: string;
 }
 
 export interface QuizResult {
