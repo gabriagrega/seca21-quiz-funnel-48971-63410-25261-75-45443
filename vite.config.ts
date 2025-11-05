@@ -15,8 +15,8 @@ export default defineConfig(({ mode }) => ({
         target: 'https://n8n.somosagrega.com.br',
         changeOrigin: true,
         secure: true,
-        // map /api/quiz/seca21 -> /webhook/quiz/seca21 (forward to production webhook)
-        rewrite: (path) => path.replace(/^\/api\/quiz/, '/webhook/quiz')
+        // map /api/quiz/seca21 -> /webhook-test/quiz/seca21
+        rewrite: (path) => path.replace(/^\/api\/quiz/, '/webhook-test/quiz')
       }
     }
   },
