@@ -9,6 +9,8 @@ import LeadCapture from "./pages/LeadCapture";
 import Result from "./pages/Result";
 import Offer from "./pages/Offer";
 import NotFound from "./pages/NotFound";
+import Privacy from "./pages/Privacy";
+import ConsentWidget from "@/components/ConsentWidget";
 
 const queryClient = new QueryClient();
 
@@ -21,10 +23,12 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Quiz />} />
           <Route path="/captura" element={<LeadCapture />} />
+          <Route path="/privacidade" element={<Privacy />} />
           <Route path="/oferta" element={<Offer />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <ConsentWidget />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

@@ -48,8 +48,7 @@ export const VideoScreen = ({ onContinue, gender, answers, userId, cameFromCheck
   const handleAppSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Continue to checkout — map gender to the correct Kiwify link.
-    // Male -> D0jeViL, Female -> mhuPjE4 (per request).
+    // Redirect to the checkout (Kiwify). Payload is sent when the quiz finishes, before showing the video.
     const checkoutUrl = gender === 'female'
       ? 'https://pay.kiwify.com.br/mhuPjE4'
       : 'https://pay.kiwify.com.br/D0jeViL';

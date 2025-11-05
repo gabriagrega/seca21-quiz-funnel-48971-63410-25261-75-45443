@@ -1,0 +1,159 @@
+[
+  {
+    "id": 1,
+    "question": "Qual é o seu nome?",
+    "subtitle": "Etapa 1 — Dados pessoais",
+    "type": "text"
+  },
+  {
+    "id": 2,
+    "question": "Qual é o seu sexo?",
+    "type": "gender",
+    "options": [
+      { "id": "male", "text": "Homem", "value": 0, "icon": "male" },
+      { "id": "female", "text": "Mulher", "value": 0, "icon": "female" }
+    ]
+  },
+  {
+    "id": 3,
+    "question": "Qual é a sua idade?",
+    "subtitle": "Isso nos ajuda a personalizar melhor o programa",
+    "type": "age",
+    "options": [
+      { "id": "18-29", "text": "18-29 anos", "value": 0, "image": "18-29" },
+      { "id": "30-39", "text": "30-39 anos", "value": 0, "image": "30-39" },
+      { "id": "40-49", "text": "40-49 anos", "value": 0, "image": "40-49" },
+      { "id": "50+", "text": "50+ anos", "value": 0, "image": "50plus" }
+    ]
+  },
+  {
+    "id": 4,
+    "question": "Qual é o seu peso atual (kg)?",
+    "type": "number"
+  },
+  {
+    "id": 5,
+    "question": "Qual é a sua altura (cm)?",
+    "type": "number"
+  },
+  {
+    "id": 6,
+    "question": "Qual é o seu principal objetivo com o SECA21?",
+    "type": "select",
+    "options": [
+      { "id": "emagrecer", "text": "Emagrecer / Perder gordura", "value": 3 },
+      { "id": "ganhar_massa", "text": "Ganhar massa muscular", "value": 2 },
+      { "id": "definir", "text": "Definir / Tonificar", "value": 2 },
+      { "id": "disposicao", "text": "Mais disposição e energia", "value": 1 }
+    ]
+  },
+  {
+    "id": 7,
+    "question": "Qual é o seu nível atual de atividade física?",
+    "subtitle": "Etapa 3 — Rotina e atividade",
+    "options": [
+      { "id": "sedentario", "text": "Sedentário - não faço exercícios", "value": 1 },
+      { "id": "leve", "text": "Leve - 1 a 2x por semana", "value": 2 },
+      { "id": "moderado", "text": "Moderado - 3 a 4x por semana", "value": 3 },
+      { "id": "intenso", "text": "Intenso - 5x ou mais por semana", "value": 3 }
+    ]
+  },
+  {
+    "id": 8,
+    "question": "Como é sua rotina diária?",
+    "subtitle": "Trabalho / estilo de vida",
+    "type": "select",
+    "options": [
+      { "id": "sentado", "text": "Trabalho sentado (escritório)", "value": 1 },
+      { "id": "em_pe", "text": "Trabalho em pé / setor operacional", "value": 2 },
+      { "id": "home", "text": "Trabalho em casa", "value": 2 },
+      { "id": "variavel", "text": "Rotina variada / outros", "value": 2 }
+    ]
+  },
+  {
+    "id": 9,
+    "question": "Onde você prefere treinar?",
+    "type": "select",
+    "options": [
+      { "id": "academia", "text": "Academia", "value": 3 },
+      { "id": "casa", "text": "Em casa", "value": 2 },
+      { "id": "ar_livre", "text": "Ao ar livre", "value": 2 },
+      { "id": "sem_preferencia", "text": "Sem preferência", "value": 1 }
+    ]
+  },
+  {
+    "id": 10,
+    "question": "Quando você costuma ter disponibilidade para treinar? (ex: manhã, tarde, noite)",
+    "type": "text"
+  },
+  {
+    "id": 11,
+    "question": "Em qual cidade você mora?",
+    "type": "text"
+  },
+  {
+    "id": 12,
+    "question": "Qual é o seu estado (UF)?",
+    "type": "text"
+  },
+  {
+    "id": 13,
+    "question": "Qual é o seu e-mail?",
+    "type": "email"
+  },
+  {
+    "id": 14,
+    "question": "Qual é o seu WhatsApp (com DDD)?",
+    "type": "phone"
+  },
+  {
+    "id": 15,
+    "question": "Qual é o seu maior desafio para emagrecer?",
+    "options": [
+      { "id": "tempo", "text": "Falta de tempo para treinar", "value": 2 },
+      { "id": "motivacao", "text": "Falta de motivação e disciplina", "value": 2 },
+      { "id": "comeco", "text": "Não sei por onde começar", "value": 3 },
+      { "id": "consistencia", "text": "Dificuldade em manter a consistência", "value": 3 }
+    ]
+  },
+  {
+    "id": 16,
+    "question": "Você tem alguma restrição alimentar?",
+    "options": [
+      { "id": "nenhuma", "text": "Não tenho restrições", "value": 3 },
+      { "id": "veg", "text": "Vegetariano/Vegano", "value": 2 },
+      { "id": "intolerancia", "text": "Intolerância a lactose/glúten", "value": 2 },
+      { "id": "outras", "text": "Outras restrições", "value": 2 }
+    ]
+  },
+  {
+    "id": 17,
+    "question": "Você já tentou programas de emagrecimento antes?",
+    "options": [
+      { "id": "primeira", "text": "Não, esta seria minha primeira vez", "value": 1 },
+      { "id": "sem_result", "text": "Sim, mas não consegui resultados", "value": 3 },
+      { "id": "teve_result", "text": "Sim, tive resultados mas não mantive", "value": 3 },
+      { "id": "parcial", "text": "Sim, e tive sucesso parcial", "value": 2 }
+    ]
+  },
+  {
+    "id": 18,
+    "question": "Qual resultado você espera alcançar em 21 dias?",
+    "options": [
+      { "id": "3-5kg", "text": "Perder de 3 a 5 kg", "value": 2 },
+      { "id": "5-10kg", "text": "Perder de 5 a 10 kg", "value": 3 },
+      { "id": "definir", "text": "Definir o abdômen e perder medidas", "value": 2 },
+      { "id": "habitos", "text": "Criar hábitos saudáveis duradouros", "value": 3 }
+    ]
+  },
+  {
+    "id": 19,
+    "question": "Você está realmente comprometido(a) a seguir o programa por 21 dias?",
+    "options": [
+      { "id": "100", "text": "Sim, estou 100% comprometido(a)!", "value": 3 },
+      { "id": "suporte", "text": "Sim, mas vou precisar de suporte", "value": 2 },
+      { "id": "talvez", "text": "Talvez, quero ver primeiro como funciona", "value": 1 },
+      { "id": "ja_tentei", "text": "Sim, já tentei outras coisas e quero algo que realmente funcione", "value": 3 }
+    ]
+  }
+]

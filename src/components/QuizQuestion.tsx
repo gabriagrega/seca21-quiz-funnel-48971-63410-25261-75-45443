@@ -19,9 +19,11 @@ interface QuizQuestionProps {
   question: QuizQuestionType;
   onAnswer: (optionId: string, value: number | string) => void;
   gender?: 'male' | 'female' | null;
+  consentGiven?: boolean;
+  onRequestConsent?: () => void;
 }
 
-export const QuizQuestion = ({ question, onAnswer, gender }: QuizQuestionProps) => {
+export const QuizQuestion = ({ question, onAnswer, gender, consentGiven, onRequestConsent }: QuizQuestionProps) => {
   const [inputValue, setInputValue] = useState<string>("");
   const isGenderQuestion = question.type === "gender";
   const isAgeQuestion = question.type === "age";
@@ -119,41 +121,53 @@ export const QuizQuestion = ({ question, onAnswer, gender }: QuizQuestionProps) 
               whileTap={{ scale: 0.98 }}
               className="col-span-1 sm:col-span-2"
             >
-              <Card className="p-4 bg-card/50 backdrop-blur-sm">
-                <div className="flex flex-col gap-4">
-                  <input
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    type={isNumberInput ? 'number' : 'text'}
-                    inputMode={question.type === 'phone' ? 'tel' : undefined}
-                    placeholder="Digite sua resposta aqui"
-                    className="w-full px-4 py-3 rounded-md border border-border bg-transparent text-foreground"
-                  />
-                  <div className="flex justify-end">
-                    <Button
-                      onClick={() => {
-                        // basic validation
-                        if (question.type === 'email') {
-                          const re = /^\S+@\S+\.\S+$/;
-                          if (!re.test(inputValue)) return;
-                        }
-                        if (question.type === 'phone') {
-                          if (!inputValue || inputValue.length < 8) return;
-                        }
-                        if (isNumberInput) {
-                          const n = Number(inputValue);
-                          onAnswer('input', Number.isFinite(n) ? n : 0);
-                        } else {
-                          onAnswer('input', inputValue);
-                        }
-                        setInputValue("");
-                      }}
-                    >
-                      Continuar
-                    </Button>
+              {/* If this is an email/phone question but consent not given, block and request consent */}
+              {((question.type === 'email' || question.type === 'phone') && !consentGiven) ? (
+                <Card className="p-4 bg-card/50 backdrop-blur-sm">
+                  <div className="flex flex-col gap-4">
+                    <p className="text-sm">Para fornecer {question.type === 'email' ? 'seu e-mail' : 'seu WhatsApp'} precisamos do seu consentimento conforme a LGPD.</p>
+                    <div className="flex justify-end">
+                      <Button onClick={() => onRequestConsent ? onRequestConsent() : null}>Dar consentimento</Button>
+                    </div>
                   </div>
-                </div>
-              </Card>
+                </Card>
+              ) : (
+                <Card className="p-4 bg-card/50 backdrop-blur-sm">
+                  <div className="flex flex-col gap-4">
+                    <input
+                      value={inputValue}
+                      onChange={(e) => setInputValue(e.target.value)}
+                      type={isNumberInput ? 'number' : 'text'}
+                      inputMode={question.type === 'phone' ? 'tel' : undefined}
+                      placeholder="Digite sua resposta aqui"
+                      className="w-full px-4 py-3 rounded-md border border-border bg-transparent text-foreground"
+                    />
+                    <div className="flex justify-end">
+                      <Button
+                        onClick={() => {
+                          // basic validation
+                          if (question.type === 'email') {
+                            const re = /^\S+@\S+\.\S+$/;
+                            if (!re.test(inputValue)) return;
+                          }
+                          if (question.type === 'phone') {
+                            if (!inputValue || inputValue.length < 8) return;
+                          }
+                          if (isNumberInput) {
+                            const n = Number(inputValue);
+                            onAnswer('input', Number.isFinite(n) ? n : 0);
+                          } else {
+                            onAnswer('input', inputValue);
+                          }
+                          setInputValue("");
+                        }}
+                      >
+                        Continuar
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+              )}
             </motion.div>
           ) : null}
       </div>
